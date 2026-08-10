@@ -4,16 +4,15 @@ import redis
 import joblib
 import pandas as pd
 import streamlit as st
+import os 
 
 
 # Synchronous client -- fine here since this isn't on the
 # gateway's request-handling hot path (see Part 1.4).
 
-r = redis.Redis(
-    host="localhost",
-    port=6379,
-    decode_responses=True
-)
+import os
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+r = redis.Redis.from_url(REDIS_URL, decode_responses=True)
 
 model = joblib.load("models/anomaly_model.pkl")
 
