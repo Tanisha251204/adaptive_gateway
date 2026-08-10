@@ -3,3 +3,6 @@ uvicorn
 httpx
 redis
 python-dotenv
+joblib
+scikit-learn
+numpy
