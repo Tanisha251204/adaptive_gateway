@@ -1,1 +1,5 @@
- fastapi uvicorn httpx
+fastapi
+uvicorn
+httpx
+redis
+python-dotenv
