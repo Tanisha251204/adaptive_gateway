@@ -1,6 +1,8 @@
 import asyncio
 import httpx
 
+GATEWAY_URL = "https://adaptive-gateway-1.onrender.com"
+
 
 async def hammer_one_endpoint(client, n=25):
     # High volume, single endpoint, fired back-to-back --
@@ -10,7 +12,7 @@ async def hammer_one_endpoint(client, n=25):
 
     for i in range(n):
         r = await client.get(
-            "http://localhost:8000/service1/data"
+            f"{GATEWAY_URL}/service1/data"
         )
 
         results.append(r.status_code)
@@ -26,12 +28,6 @@ async def main():
         )
 
         print("Status codes:", results)
-
-        anomaly = await client.get(
-            "http://localhost:8000/gateway/anomaly/127.0.0.1"
-        )
-
-        print("Anomaly check:", anomaly.json())
 
 
 asyncio.run(main())
