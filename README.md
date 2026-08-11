@@ -1,13 +1,13 @@
 # Adaptive API Gateway
 
-An API gateway that learns normal traffic patterns per client and dynamically tightens rate limits for clients whose behavior looks anomalous — instead of applying one fixed limit to everyone.
+An API gateway that learns normal traffic patterns per client and dynamically tightens rate limits for clients whose behavior looks anomalous - instead of applying one fixed limit to everyone.
 
 ## Live Demo
 
 - **Gateway:** https://adaptive-gateway-1.onrender.com/gateway/health
 - **Dashboard:** https://adaptivegateway-rpgqqk9rircptogalgvpcg.streamlit.app
 
-> Note: backend services run on Render's free tier and spin down after 15 minutes of inactivity — the first request after a period of idle time may take 30–60 seconds to respond while the service wakes up.
+> Note: backend services run on Render's free tier and spin down after 15 minutes of inactivity - the first request after a period of idle time may take 30–60 seconds to respond while the service wakes up.
 
 ## Screenshots
 
@@ -33,7 +33,7 @@ Client → [Gateway] → routes to → [Backend 1] / [Backend 2]
 
 ## Key Results
 
-- **100% recall, 9% false-positive rate** detecting simulated abusive traffic — Isolation Forest trained on 800 simulated normal + 100 simulated abusive traffic samples, using request rate, endpoint diversity, and timing burstiness as features.
+- **100% recall, 9% false-positive rate** detecting simulated abusive traffic - Isolation Forest trained on 800 simulated normal + 100 simulated abusive traffic samples, using request rate, endpoint diversity, and timing burstiness as features.
 - **~30 RPS sustained at 50 concurrent clients** under Locust load testing, with correct rate-limiting behavior (429s) under contention — verified with a dedicated concurrency test proving the Redis Lua script prevents race conditions under simultaneous requests.
 - **Found and fixed two real performance bottlenecks** during load testing: redundant sequential Redis round trips (fixed via pipelining) and synchronous ML inference blocking the async event loop under concurrency (fixed via `asyncio.to_thread`).
 
@@ -46,7 +46,7 @@ FastAPI · Redis (Upstash) · scikit-learn (Isolation Forest) · httpx · Stream
 1. A request hits the gateway and is routed to the correct backend based on a path prefix (`/service1/*`, `/service2/*`).
 2. The request is logged into Redis, tracking per-client request timestamps and endpoint diversity in a rolling 60-second window.
 3. The client's recent traffic is scored against a trained Isolation Forest model.
-4. If the client looks anomalous, their rate limit bucket is tightened (lower capacity, slower refill) instead of being blocked outright — a deliberate trade-off given the model's measured 9% false-positive rate.
+4. If the client looks anomalous, their rate limit bucket is tightened (lower capacity, slower refill) instead of being blocked outright - a deliberate trade-off given the model's measured 9% false-positive rate.
 5. The rate limit check itself runs as an atomic Redis Lua script, eliminating the check-then-act race condition a naive implementation would have under concurrent requests.
 6. Allowed requests are proxied to the real backend; rejected ones get a `429` with a `Retry-After` header.
 
