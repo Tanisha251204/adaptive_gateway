@@ -103,10 +103,10 @@ async def proxy_request(
             method=request.method,
             url=target_url,
             headers={
-                k: v
-                for k, v in request.headers.items()
-                if k.lower() != "host"
-            },
+            k: v
+            for k, v in request.headers.items()
+            if k.lower() not in ("host", "accept-encoding")
+    },
             content=body,
         )
 
